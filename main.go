@@ -14,7 +14,7 @@ func main() {
 	helpers.SetupLogger()
 
 	// load database
-	// helpers.SetupMySQL()
+	helpers.SetupMySQL()
 
 	//run HTTP
 	cmd.ServeHTTP()

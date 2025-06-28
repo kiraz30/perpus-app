@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"log"
+	"perpus-app/internals/models"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
@@ -26,4 +27,6 @@ func SetupMySQL() {
 	}
 
 	logrus.Info("Connected to MySQL database success")
+
+	DB.AutoMigrate(&models.User{})
 }
