@@ -1,4 +1,4 @@
-package service
+package services
 
 import "perpus-app/internals/interfaces"
 
