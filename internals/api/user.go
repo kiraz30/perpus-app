@@ -43,3 +43,35 @@ func (api *UserHandler) RegisterUser(c *gin.Context) {
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
 	return
 }
+
+func (api *UserHandler) Login(c *gin.Context) {
+	var (
+		log      = helpers.Logger
+		request  = models.LoginRequest{}
+		response = models.LoginResponse{}
+	)
+
+	err := c.ShouldBindBodyWithJSON(&request)
+	if err != nil {
+		log.Info("Failed to parse request :", err)
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	err = request.Validate()
+	if err != nil {
+		log.Info("Failed to validate :", err)
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	response, err = api.UserService.Login(c.Request.Context(), request)
+	if err != nil {
+		log.Info("Failed to login :", err)
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrFailedInternalServer, nil)
+		return
+	}
+
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
+	return
+}

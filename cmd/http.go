@@ -18,7 +18,8 @@ func ServeHTTP() {
 	r.GET("/healty", dependency.HealtCheckApi.HealthCheckHandle)
 
 	userV1 := r.Group("/v1/user")
-	userV1.POST("/register", dependency.RegisterAPI.RegisterUser)
+	userV1.POST("/register", dependency.UserAPI.RegisterUser)
+	userV1.POST("/login", dependency.UserAPI.Login)
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
@@ -28,7 +29,7 @@ func ServeHTTP() {
 
 type Dependency struct {
 	HealtCheckApi interfaces.IHealthCheckHandler
-	RegisterAPI   interfaces.IUserHandler
+	UserAPI       interfaces.IUserHandler
 }
 
 func dependencyInject() Dependency {
@@ -40,15 +41,15 @@ func dependencyInject() Dependency {
 	userRepository := &repositories.UserRepository{
 		DB: helpers.DB,
 	}
-	registerSVC := &service.UserService{
+	userSVC := &service.UserService{
 		UserRepository: userRepository,
 	}
-	registerApi := &api.UserHandler{
-		UserService: registerSVC,
+	userApi := &api.UserHandler{
+		UserService: userSVC,
 	}
 
 	return Dependency{
 		HealtCheckApi: healthCheckApi,
-		RegisterAPI:   registerApi,
+		UserAPI:       userApi,
 	}
 }
