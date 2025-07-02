@@ -80,3 +80,9 @@ func (s *UserService) Login(ctx context.Context, request models.LoginRequest) (m
 
 	return response, nil
 }
+
+func (s *UserService) Logout(ctx context.Context, token string) error {
+	// Delete user session
+	return s.UserRepository.DeleteUserSession(ctx, token)
+
+}

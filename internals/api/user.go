@@ -75,3 +75,18 @@ func (api *UserHandler) Login(c *gin.Context) {
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
 	return
 }
+
+func (api *UserHandler) Logout(c *gin.Context) {
+	var (
+		log = helpers.Logger
+	)
+	token := c.Request.Header.Get("Authorization")
+
+	err := api.UserService.Logout(c.Request.Context(), token)
+	if err != nil {
+		log.Info("Failed to logout :", err)
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrFailedInternalServer, nil)
+		return
+	}
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, nil)
+}
