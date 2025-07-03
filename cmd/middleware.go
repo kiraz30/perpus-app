@@ -32,13 +32,6 @@ func (d *Dependency) MiddlewareValidateAuth(ctx *gin.Context) {
 		return
 	}
 
-	// if dataUserToken.Token == "" {
-	// 	log.Println("User session token not found")
-	// 	helpers.SendResponseHTTP(ctx, http.StatusUnauthorized, "Unauthorized token not found", nil)
-	// 	ctx.Abort()
-	// 	return
-	// }
-
 	claim, err := helpers.ValidateToken(ctx, token)
 	if err != nil {
 		log.Println("Error validating token:", err)

@@ -20,7 +20,11 @@ func ServeHTTP() {
 	userV1 := r.Group("/v1/user")
 	userV1.POST("/register", dependency.UserAPI.RegisterUser)
 	userV1.POST("/login", dependency.UserAPI.Login)
-	userV1.POST("/logout", dependency.MiddlewareValidateAuth, dependency.UserAPI.Logout)
+
+	userV1WithAuth := userV1.Use()
+	userV1WithAuth.POST("/logout", dependency.MiddlewareValidateAuth, dependency.UserAPI.Logout)
+	userV1WithAuth.PUT("/refresh-token", dependency.MiddlewareValidateAuth, dependency.UserAPI.RefreshToken)
+
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)

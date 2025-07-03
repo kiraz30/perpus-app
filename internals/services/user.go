@@ -60,10 +60,15 @@ func (s *UserService) Login(ctx context.Context, request models.LoginRequest) (m
 		return response, errors.Wrap(err, "failed to generate token")
 	}
 
+	refreshToken, err := helpers.GenerateToken(ctx, userData.ID, userData.Username, userData.Email, "token", now)
+	if err != nil {
+		return response, errors.Wrap(err, "failed to generate refresh token")
+	}
+
 	userSession := &models.UserSession{
 		UserID:                userData.ID,
 		Token:                 token,
-		RefreshToken:          "",
+		RefreshToken:          token,
 		TokenExpiresAt:        now.Add(helpers.MapTypeToken["token"]),
 		RefreshTokenExpiresAt: now.Add(helpers.MapTypeToken["refresh_token"]),
 	}
@@ -77,6 +82,7 @@ func (s *UserService) Login(ctx context.Context, request models.LoginRequest) (m
 	response.Username = userData.Username
 	response.Email = userData.Email
 	response.Token = token
+	response.RefreshToken = refreshToken
 
 	return response, nil
 }
@@ -85,4 +91,19 @@ func (s *UserService) Logout(ctx context.Context, token string) error {
 	// Delete user session
 	return s.UserRepository.DeleteUserSession(ctx, token)
 
+}
+
+func (s *UserService) RefreshToken(ctx context.Context, refreshToken string, tokenClaim helpers.ClaimToken) (models.RefreshTokenResponse, error) {
+	response := models.RefreshTokenResponse{}
+	token, err := helpers.GenerateToken(ctx, tokenClaim.UserID, tokenClaim.Username, tokenClaim.Email, "token", time.Now())
+	if err != nil {
+		return response, errors.Wrap(err, "Failed generate token")
+	}
+
+	err = s.UserRepository.UpdateRefreshToken(ctx, token, refreshToken)
+	if err != nil {
+		return response, errors.Wrap(err, "failed to update token by refresh token")
+	}
+	response.Token = token
+	return response, nil
 }

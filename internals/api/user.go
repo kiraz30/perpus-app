@@ -90,3 +90,34 @@ func (api *UserHandler) Logout(c *gin.Context) {
 	}
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, nil)
 }
+
+func (api *UserHandler) RefreshToken(c *gin.Context) {
+	var (
+		log = helpers.Logger
+	)
+	refreshToken := c.Request.Header.Get("Authorization")
+	//get token form gin
+	claim, ok := c.Get("token")
+	if !ok {
+		log.Info("Failed to get claim token in context")
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	tokenClaim, ok := claim.(*helpers.ClaimToken)
+	if !ok {
+		log.Info("Failed to parse claim tto claimToken")
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	response, err := api.UserService.RefreshToken(c.Request.Context(), refreshToken, *tokenClaim)
+	if err != nil {
+		log.Info("Failed to refresh token service", err)
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
+
+}

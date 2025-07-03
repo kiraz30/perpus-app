@@ -57,8 +57,13 @@ func (l LoginRequest) Validate() error {
 }
 
 type LoginResponse struct {
-	UserID   int    `json:"user_id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Token    string `json:"token"`
+	UserID       int    `json:"user_id"`
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type RefreshTokenResponse struct {
+	Token string `json:"token"`
 }
