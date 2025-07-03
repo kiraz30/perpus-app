@@ -14,6 +14,7 @@ func (d *Dependency) MiddlewareValidateAuth(ctx *gin.Context) {
 	if token == "" {
 		log.Println("Authorization header is missing")
 		helpers.SendResponseHTTP(ctx, http.StatusUnauthorized, "Unauthorized", nil)
+		ctx.Abort()
 		return
 	}
 

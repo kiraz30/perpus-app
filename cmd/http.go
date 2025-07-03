@@ -25,6 +25,10 @@ func ServeHTTP() {
 	userV1WithAuth.POST("/logout", dependency.MiddlewareValidateAuth, dependency.UserAPI.Logout)
 	userV1WithAuth.PUT("/refresh-token", dependency.MiddlewareValidateAuth, dependency.UserAPI.RefreshToken)
 
+	bookV1 := r.Group("/v1/book")
+	bookV1WithAuth := bookV1.Use()
+	bookV1WithAuth.POST("/create", dependency.MiddlewareValidateAuth, dependency.BookAPI.CreateBookData)
+
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)
@@ -36,6 +40,7 @@ type Dependency struct {
 	HealtCheckApi  interfaces.IHealthCheckHandler
 	UserAPI        interfaces.IUserHandler
 	UserRepository interfaces.IUserRepository
+	BookAPI        interfaces.IBookHandler
 }
 
 func dependencyInject() Dependency {
@@ -54,9 +59,20 @@ func dependencyInject() Dependency {
 		UserService: userSVC,
 	}
 
+	bookRepository := &repositories.BookRepository{
+		DB: helpers.DB,
+	}
+	bookSVC := &service.BookService{
+		BookRepository: bookRepository,
+	}
+	bookAPI := &api.BookApi{
+		BookService: bookSVC,
+	}
+
 	return Dependency{
 		HealtCheckApi:  healthCheckApi,
 		UserAPI:        userApi,
 		UserRepository: userRepository,
+		BookAPI:        bookAPI,
 	}
 }
