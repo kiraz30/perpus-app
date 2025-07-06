@@ -43,3 +43,27 @@ func (api *BookApi) CreateBookData(c *gin.Context) {
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
 
 }
+
+func (api *BookApi) GetListBook(c *gin.Context) {
+	var log = helpers.Logger
+
+	response, err := api.BookService.GetListBook(c.Request.Context())
+	if err != nil {
+		log.Errorf("Failed to get list Book ")
+	}
+
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
+}
+
+func (api *BookApi) GetByBookCode(c *gin.Context) {
+	var log = helpers.Logger
+
+	bookCode := c.Param("bookCode")
+
+	response, err := api.BookService.GetByBookCode(c.Request.Context(), bookCode)
+	if err != nil {
+		log.Errorf("Failed to get Book ")
+	}
+
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
+}

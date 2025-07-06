@@ -28,6 +28,8 @@ func ServeHTTP() {
 	bookV1 := r.Group("/v1/book")
 	bookV1WithAuth := bookV1.Use()
 	bookV1WithAuth.POST("/create", dependency.MiddlewareValidateAuth, dependency.BookAPI.CreateBookData)
+	bookV1WithAuth.GET("/list", dependency.MiddlewareValidateAuth, dependency.BookAPI.GetListBook)
+	bookV1WithAuth.GET("/detail/:bookCode", dependency.MiddlewareValidateAuth, dependency.BookAPI.GetByBookCode)
 
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {

@@ -21,3 +21,11 @@ func (s *BookService) InsertBookData(ctx context.Context, request models.Book) (
 
 	return request, nil
 }
+
+func (s *BookService) GetListBook(ctx context.Context) ([]models.Book, error) {
+	return s.BookRepository.GetListBook(ctx)
+}
+
+func (s *BookService) GetByBookCode(ctx context.Context, bookCode string) (models.Book, error) {
+	return s.BookRepository.GetByBookCode(ctx, bookCode)
+}
