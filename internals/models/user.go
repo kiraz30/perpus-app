@@ -11,6 +11,8 @@ type User struct {
 	Username  string    `json:"username" gorm:"column:username;type:varchar(20)" validate:"required"`
 	Email     string    `json:"email" gorm:"column:email;type:varchar(100)" validate:"required,email"`
 	Password  string    `json:"password,omitempty" gorm:"column:password;type:varchar(255)" validate:"required" `
+	FullName  string    `json:"full_name" gorm:"column:full_name;type:varchar(25)" validate:"required"`
+	UserRole  string    `json:"user_role" gorm:"column:user_role;type:ENUM('ADMIN', 'MEMBER')" validate:"required"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
