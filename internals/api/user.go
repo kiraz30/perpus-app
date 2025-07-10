@@ -41,7 +41,6 @@ func (api *UserHandler) RegisterUser(c *gin.Context) {
 	}
 
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
-	return
 }
 
 func (api *UserHandler) Login(c *gin.Context) {
@@ -73,7 +72,6 @@ func (api *UserHandler) Login(c *gin.Context) {
 	}
 
 	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccesMessage, response)
-	return
 }
 
 func (api *UserHandler) Logout(c *gin.Context) {

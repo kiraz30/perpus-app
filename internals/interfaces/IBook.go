@@ -11,6 +11,7 @@ type IBookRepository interface {
 	InsertNewBook(ctx context.Context, book *models.Book) error
 	GetListBook(ctx context.Context) ([]models.Book, error)
 	GetByBookCode(ctx context.Context, BookCode string) (models.Book, error)
+	UpdateStatusBook(ctx context.Context, BookCode string, status int) error
 }
 
 type IBookService interface {
